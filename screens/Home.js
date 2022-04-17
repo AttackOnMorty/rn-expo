@@ -10,7 +10,8 @@ import PalettePreview from '../components/PalettePreview';
 
 const URL = 'https://color-palette-api.kadikraman.vercel.app/palettes';
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
+  const newPalette = route.params ? route.params.newPalette : null;
   const [palettes, setPalettes] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -33,6 +34,12 @@ const Home = ({ navigation }) => {
     fetchPalettes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (newPalette) {
+      setPalettes((current) => [newPalette, ...current]);
+    }
+  }, [newPalette]);
 
   return (
     <>
