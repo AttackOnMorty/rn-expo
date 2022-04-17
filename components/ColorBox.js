@@ -1,13 +1,27 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-const ColorBox = ({ colorName, hexCode }) => (
-  <View style={[styles.box, { backgroundColor: hexCode }]}>
-    <Text style={styles.text}>
-      {colorName} {hexCode}
-    </Text>
-  </View>
-);
+const ColorBox = ({ colorName, hexCode }) => {
+  const boxStyle = {
+    backgroundColor: hexCode,
+  };
+
+  const textStyle = {
+    // NOTE: Here we essentially get the lightest 10% of the background colors and display black text for these, and white for the rest.
+    color:
+      parseInt(hexCode.replace('#', ''), 16) > 0xffffff / 1.1
+        ? 'black'
+        : 'white',
+  };
+
+  return (
+    <View style={[styles.box, boxStyle]}>
+      <Text style={[styles.text, textStyle]}>
+        {colorName} {hexCode}
+      </Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   box: {
