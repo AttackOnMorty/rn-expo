@@ -1,22 +1,30 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, RefreshControl } from 'react-native';
 import PalettePreview from '../components/PalettePreview';
 
 const URL = 'https://color-palette-api.kadikraman.vercel.app/palettes';
 
 const Home = ({ navigation }) => {
   const [palettes, setPalettes] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleFetchPalettes = useCallback(async () => {
+  const fetchPalettes = useCallback(async () => {
+    setIsRefreshing(true);
+
     const response = await fetch(URL);
     if (response.ok) {
       const palettes = await response.json();
       setPalettes(palettes);
     }
+
+    // NOTE: For user experience
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1000);
   }, []);
 
   useEffect(() => {
-    handleFetchPalettes();
+    fetchPalettes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -31,6 +39,9 @@ const Home = ({ navigation }) => {
           onPress={() => navigation.push('ColorPalette', item)}
         />
       )}
+      refreshControl={
+        <RefreshControl refreshing={isRefreshing} onRefresh={fetchPalettes} />
+      }
     />
   );
 };
